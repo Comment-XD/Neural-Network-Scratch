@@ -1,7 +1,6 @@
 import numpy as np
-from src.layer import Layer
 
-class Activation(Layer):
+class Activation:
     def __init__(self, name:str):
 
         assert name in activation_forward.keys(), f"Activation {name} not supported"
@@ -14,8 +13,8 @@ class Activation(Layer):
         self.input = x
         return self.activation_forward(x)
 
-    def backward(self, x):
-        return self.activation_backward(x)
+    def backward(self, gradient):
+        return np.multiply(gradient, self.activation_backward(self.input))
 
 def softmax_backward(x, output_gradient):
     # This version is faster than the one presented in the video
@@ -33,7 +32,7 @@ activation_backward = {
     'tanh': lambda x: 1 - x ** 2,
     'relu': lambda x: np.where(x > 0, 1, 0),
     'sigmoid': lambda x: x * (1 - x),
-    'softmax': lambda x: 1
+    'softmax': lambda x: 1.0
 }
 
 class Tanh(Activation):
@@ -43,9 +42,9 @@ class Tanh(Activation):
     def forward(self, x):
         return super().forward(x)
 
-    def backward(self, x):
-        x = self.forward(x)
-        return super().backward(x)
+    def backward(self, gradient):
+        x = self.forward(self.input)
+        return gradient * super().backward(x)
 
     def __str__(self):
         return "Tanh()"
@@ -57,9 +56,9 @@ class Sigmoid(Activation):
     def forward(self, x):
         return super().forward(x)
 
-    def backward(self, x):
-        x = self.forward(x)
-        return super().backward(x)
+    def backward(self, gradient):
+        x = self.forward(self.input)
+        return np.multiply(gradient, super().backward(x))
 
     def __str__(self):
         return "Sigmoid()"
@@ -71,8 +70,8 @@ class ReLU(Activation):
     def forward(self, x):
         return super().forward(x)
 
-    def backward(self, x):
-        return super().backward(x)
+    def backward(self, gradient):
+        return np.multiply(gradient, super().backward(self.input))
 
     def __str__(self):
         return "ReLU()"
@@ -83,9 +82,9 @@ class Softmax(Activation):
 
     def forward(self, x):
         return super().forward(x)
-
-    def backward(self, x):
-        return super().backward(x)
+    
+    def backward(self, gradient):
+        return gradient
 
     def __str__(self):
         return "Softmax()"

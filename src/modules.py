@@ -8,7 +8,7 @@ from src.layer import Layer
 class Linear(Layer):
     def __init__(self, in_features, out_features, bias:bool=False, activation:Optional[str]=None):
         super().__init__()
-        self.weights = np.random.rand(in_features, out_features)
+        self.weights = np.random.randn(in_features, out_features)
         if bias: 
             self.bias = np.random.rand()
             
@@ -28,7 +28,7 @@ class Linear(Layer):
         if self.activation:
             a_input = self.forward(self.input)
             gradient = np.multiply(gradient, self.activation.backward(a_input))
-
+        
         self.weights -= alpha * np.dot(self.input.T, gradient)
         # self.bias -= alpha * np.sum(gradient)
 
@@ -81,7 +81,13 @@ class Sequential:
 
     def backward(self, gradient, alpha):
         for layer in reversed(self.layers):
-            gradient = layer.backward(gradient, alpha)
+            
+            if isinstance(layer, Activation):
+                gradient = layer.backward(gradient)
+                
+            else:
+                gradient = layer.backward(gradient, alpha)
+        
         return gradient
 
     def __call__(self, x):

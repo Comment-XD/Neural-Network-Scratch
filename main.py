@@ -2,22 +2,27 @@ import numpy as np
 
 from src.modules import *
 from src.activation import *
-from src.utils import Trainer
+from src.loss import *
+from src.utils import Trainer, train_test_split
 
 from sklearn.datasets import load_digits
 
-digits_dataset = load_digits(as_frame=False)["data"] / 255.0
+features, labels = load_digits(return_X_y=True)
+X_train, X_test, y_train, y_test = train_test_split(features, labels)
 
-print(digits_dataset.shape)
 
-
-fc = Sequential([
+model = Sequential([
     Linear(64, 100),
     Sigmoid(),
-    Linear(100, 10)
+    Linear(100, 100),
+    Sigmoid(),
+    Linear(100, 10),
+    Softmax()
 ])
 
-# data = np.random.rand(64, 5)
 
-# print(fc(data).shape)
-# # Trainer(fc, )
+trainer = Trainer(model, X_train, X_test, y_train, y_test, loss=CrossEntropyLoss(onehot=True))
+trainer.run(lr=3e-4, verbose=True, epochs=100)
+
+
+

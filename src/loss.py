@@ -37,15 +37,20 @@ class BCELoss(Loss):
         return ((1 - self.y_true) / (1 - self.y_pred) - self.y_true / self.y_pred) / np.size(self.y_true)
     
 class CrossEntropyLoss(Loss):
-    def __init__(self, epsilon:float=1e-10):
+    def __init__(self, onehot:bool=False, epsilon:float=1e-10):
         super().__init__()
+        self.onehot = onehot
         self.epsilon = epsilon
 
     def __call__(self, y_true, y_pred):
+        
         self.y_true = y_true
         self.y_pred = y_pred
+        
+        if self.onehot:
+            self.y_true = np.eye(10)[y_true.astype(int)]
 
-        return np.mean(-np.dot(y_true, np.log(y_pred + self.epsilon)))
+        return -np.sum(self.y_true * np.log(y_pred + self.epsilon), axis=1)
 
     def backward(self):
-        return 1.0
+        return self.y_pred - self.y_true
