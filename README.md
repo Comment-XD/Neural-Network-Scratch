@@ -1,4 +1,3 @@
-# Machine-Learning-Scratch
 # Neural Network from Scratch
 
 This project implements a simple neural network framework from scratch in Python, designed for educational purposes and experimentation. It does not rely on external deep learning libraries, providing a clear view of the underlying mechanics of neural networks.
