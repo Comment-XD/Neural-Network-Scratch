@@ -1,3 +1,6 @@
+import numpy as np
+from typing import Optional
+
 class Trainer:
     def __init__(self, model, X, y, loss):
         self.model = model
@@ -6,7 +9,7 @@ class Trainer:
         self.loss = loss
         self.loss_chart = []
 
-    def run(self, alpha:float=0e-4, verbose:bool=False, epochs:int=100):
+    def run(self, alpha:float=1e-4, verbose:bool=False, epochs:int=100):
         self.epochs = epochs
 
         for i in range(epochs):
@@ -23,3 +26,14 @@ class Trainer:
 
             gradient = self.loss.backward()
             self.model.backward(gradient, alpha)
+
+class DataLoader(object):
+    def __call__(dataset, batch_size, shuffle:bool=True, drop_last:bool=False):
+        pass
+
+def train_test_split(X, y, test_size:float, train_size:float, shuffle:bool=True, random_seed:Optional[int]=None):
+    np.random.seed(random_seed)
+    
+
+
+    

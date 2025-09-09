@@ -1,27 +1,17 @@
 import numpy as np
+from typing import Optional, List, Union
+
 from src.activation import Activation
-
-from typing import Optional
-from typing import List, Union
-from src.activation import Activation
-
-class Layer:
-    def __init__(self):
-        self.weights = None
-        self.bias = None
-
-    def forward(self):
-        pass
-
-    def backward(self):
-        pass
+from src.layer import Layer
     
 
 class Linear(Layer):
-    def __init__(self, in_features, out_features, activation:Optional[str]=None):
+    def __init__(self, in_features, out_features, bias:bool=False, activation:Optional[str]=None):
         super().__init__()
-        self.weights = np.random.randn(in_features, out_features)
-        # self.bias = np.random.randn(out_features)
+        self.weights = np.random.rand(in_features, out_features)
+        if bias: 
+            self.bias = np.random.rand()
+            
         self.activation = Activation(activation) if activation else None
 
     def forward(self, x):
@@ -49,9 +39,9 @@ class Linear(Layer):
         return f"Linear(in_feat={self.weights.shape[0]}, out_feat={self.weights.shape[1]})"
 
 class Conv2d(Layer):
-    def __init__(self, in_features, out_features, activation:Optional[str]=None):
+    def __init__(self, in_channels, out_channels, activation:Optional[str]=None):
         super().__init__()
-        self.weights = np.random.randn(in_features, out_features)
+        self.weights = np.random.randn(in_channels, out_channels)
         # self.bias = np.random.randn(out_features)
         self.activation = Activation(activation) if activation else None
 
